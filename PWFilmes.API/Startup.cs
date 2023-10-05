@@ -30,7 +30,8 @@ namespace PWFilmes.API
         {
             services.AddDbContext<PWFilmesContext>(options =>
             {
-                var connection = Configuration.GetConnectionString("PwFilmesConnection");
+
+                var connection = "server=localhost;port=3306;database=PWFilmes;uid=root"; //;password=1234uno
                 options.UseMySql(connection, ServerVersion.AutoDetect(connection));
             });
 

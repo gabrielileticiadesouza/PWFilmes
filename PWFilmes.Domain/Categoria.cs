@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PWFilmes.Domain
 {
-    [Table("Categoria")]
+    [Table("TB_Categoria")]
    public class Categoria
     {
         [Key]
