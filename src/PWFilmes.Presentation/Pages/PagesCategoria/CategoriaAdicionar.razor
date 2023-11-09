@@ -1,9 +1,13 @@
 ﻿@page "/categoria-nova"
 @using PWFilmes.Domain
+@using System.Net
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <h3>Nova Categoria</h3>
 
-<EditForm Model="categoriaModel">
+<EditForm Model="categoriaModel" OnValidSubmit="Confirmar">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <RadzenRow>
@@ -28,7 +32,9 @@
         <RadzenButton Icon="delete_forever"
                       ButtonStyle="ButtonStyle.Danger"
                       Text="Cancelar"
-                      class="rz-border-radius-10" />
+                      class="rz-border-radius-10" 
+                      Click="Cancelar"
+                      />
 
         <RadzenButton Icon="done"
                       ButtonStyle="ButtonStyle.Success"
@@ -40,4 +46,20 @@
 
 @code {
     Categoria categoriaModel = new Categoria();
+
+    private async void Confirmar()
+    {
+        JsonContent categoriaModelJson =
+           JsonContent.Create(categoriaModel);
+
+        HttpResponseMessage response = await Http.PostAsync("api/Categoria/adicionar", categoriaModelJson);
+
+        if (response.StatusCode == HttpStatusCode.Created)
+            NavigationManager.NavigateTo("categoria/listar");
+    }
+
+    private void Cancelar()
+        {
+            NavigationManager.NavigateTo("categoria/listar");
+        }
 }
