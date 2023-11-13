@@ -2,10 +2,14 @@
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
+@inject DialogService DialogService
+
 @using System.Text.Json
 @using PWFilmes.Domain
 
 <h3>Categorias</h3>
+
+<RadzenDialog/>
 
 <RadzenButton 
     Icon="add"
@@ -37,6 +41,29 @@
                 <RadzenColorPicker @bind-Value=@data.Cor Style="width: 100%" Disabled />
             </Template>
         </RadzenDataGridColumn>
+        <RadzenDataGridColumn
+            TItem="Categoria"
+            Filterable="false"
+            Sortable="false"
+            Title="Ações"
+            TextAlign="TextAlign.Center"
+            Width="50px">
+            <Template Context="data">
+                <RadzenStack
+                            Orientation="Orientation.Horizontal"
+                            JustifyContent="JustifyContent.Center">
+                     <RadzenButton
+                                  Icon="edit"
+                                  ButtonStyle="ButtonStyle.Primary"
+                                  class="rz-border-radius-10"/>
+                    <RadzenButton Icon="delete_forever"
+                                  ButtonStyle="ButtonStyle.Danger"
+                                  class="rz-border-radius-10"
+                                  Click="() => RemoverCategoria(data.Codigo)"/>
+                                  
+                </RadzenStack>
+            </Template>
+        </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
 
@@ -58,6 +85,23 @@
     public void NovaCategoria()
     {
         NavigationManager.NavigateTo("categoria-nova");
+    }
+
+    public async Task RemoverCategoria(int codigoCategoria)
+    {
+        var retorno = await
+            DialogService.Confirm($"Deseja excluir a categoria de código {codigoCategoria}",
+            "PWFilmes",
+            new ConfirmOptions()
+            {
+                OkButtonText = "Sim",
+                CancelButtonText = "Não"
+            });
+
+        if (retorno is true)
+        {
+            await Http.DeleteAsync($"api/Categoria/excluir/{codigoCategoria}");
+        }
     }
 
 }
