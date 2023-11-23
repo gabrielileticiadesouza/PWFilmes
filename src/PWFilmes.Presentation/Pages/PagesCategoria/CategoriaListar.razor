@@ -55,7 +55,8 @@
                      <RadzenButton
                                   Icon="edit"
                                   ButtonStyle="ButtonStyle.Primary"
-                                  class="rz-border-radius-10"/>
+                                  class="rz-border-radius-10"
+                                  Click="EditarCategoria"/>
                     <RadzenButton Icon="delete_forever"
                                   ButtonStyle="ButtonStyle.Danger"
                                   class="rz-border-radius-10"
@@ -87,6 +88,11 @@
         NavigationManager.NavigateTo("categoria-nova");
     }
 
+    public void EditarCategoria()
+    {
+        NavigationManager.NavigateTo("categoria-editar");
+    }
+
     public async Task RemoverCategoria(int codigoCategoria)
     {
         var retorno = await
@@ -100,7 +106,9 @@
 
         if (retorno is true)
         {
-            await Http.DeleteAsync($"api/Categoria/excluir/{codigoCategoria}");
+            var response = await Http.DeleteAsync($"api/Categoria/excluir/{codigoCategoria}");
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                await OnInitializedAsync();
         }
     }
 
